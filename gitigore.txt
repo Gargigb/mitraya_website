@@ -1,0 +1,4 @@
+dont show following folders
+.venv
+.vscode 
+images 
