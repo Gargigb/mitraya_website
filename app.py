@@ -9,8 +9,8 @@ green placeholder is shown for anything missing):
 
     images/logo.png
     images/hero.jpg
-    images/about_1.jpg
-    images/about_2.jpg
+    images/D:\Dashboard\images\okra.jpeg.jpg
+    images/D:\Dashboard\images\paddy.jpeg.jpg
     images/projects/<name>.jpg      (names are set in PROJECTS below)
     images/gallery/*.jpg|png|jpeg   (every picture in this folder appears in Gallery)
 
@@ -502,7 +502,7 @@ def page_gallery():
         tiles = "".join(
             f'<div class="item"><img src="{data_uri(str(f))}" alt="{f.stem}"></div>' for f in files)
     else:
-        tiles = "".join(f'<div class="item">{img("D:\Dashboard\gallery_files\warehouse.jpeg", f"Photo {i}")}</div>' for i in range(1, 10))
+        tiles = "".join(f'<div class="item">{img("", f"Photo {i}")}</div>' for i in range(1, 10))
         tiles += ""
     show(f'<div class="section"><div class="wrap"><div class="gallery_files">{tiles}</div></div></div>')
     if not files:
