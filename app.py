@@ -9,8 +9,8 @@ green placeholder is shown for anything missing):
 
     images/logo.png
     images/hero.jpg
-    images/D:\Dashboard\images\okra.jpeg.jpg
-    images/D:\Dashboard\images\paddy.jpeg.jpg
+    images/about_1.jpg
+    images/about_2.jpg
     images/projects/<name>.jpg      (names are set in PROJECTS below)
     images/gallery/*.jpg|png|jpeg   (every picture in this folder appears in Gallery)
 
@@ -80,7 +80,7 @@ STATS = [
 ]
 TEAM = [
     # ("Name", "Role", "images/team/name.jpg")
-    ("Praful Bandbuche", "Chief Executive Officer and Director", "D:\Dashboard\images\Praful.jpg"),
+    ("Praful Bandbuche", "Chief Executive Officer and Director", "D:/Dashboard/images/Praful.jpg"),
     #("Praful Bandbuche", "Director", "team/director.jpg"),
 ]
 FOCUS_AREAS = [
@@ -100,28 +100,28 @@ FOCUS_AREAS = [
 PROJECTS = [
     {
         "title": "Sustainable Agriculture",
-        "image": "D:\Dashboard\images\AWD@.jpeg",
+        "image": "D:/Dashboard/images/AWD@.jpeg",
         "text": "Promoting regenerative and low-input practices such as soil testing, "
                 "organic inputs, crop rotation and efficient irrigation.",
         "points": ["Soil health programmes", "Water-saving irrigation", "Seed and input support"],
     },
     {
         "title": "Climate Finance",
-        "image": "D:\Dashboard\images\climate_finance.jpg",
+        "image": "D:/Dashboard/images/climate_finance.jpg",
         "text": "Climate finance is money used to fund projects that stop climate change or help communities deal with its effects"
                 "farmers can earn and decide for themselves.",
         "points": ["Self-help groups", "Skill and enterprise training", "Leadership workshops"],
     },
     {
         "title": "Market Linkage",
-        "image": "D:\Dashboard\images\container.jpeg",
+        "image": "D:/Dashboard/images/container.jpeg",
         "text": "Collection centres, grading, storage and direct sales so that members "
                 "get a fair share of the final price.",
         "points": ["Aggregation centres", "Buyer partnerships", "Value addition"],
     },
     {
         "title": "Training & Education",
-        "image": "D:\Dashboard\images\Training.jpeg",
+        "image": "D:/Dashboard/images/Training.jpeg",
         "text": "Practical learning for farmers and better access to quality education "
                 "for rural children and youth.",
         "points": ["Farmer field schools", "Digital literacy", "Scholarship support"],
@@ -141,7 +141,7 @@ PAGES = {
 }
 SLUG_TO_PAGE = {v: k for k, v in PAGES.items()}
 
-st.set_page_config(page_title=ORG_NAME, page_icon="D:\Dashboard\images\mitraya_logo.jpeg", layout="wide",
+st.set_page_config(page_title=ORG_NAME, page_icon="D:/Dashboard/images/mitraya_logo.jpeg", layout="wide",
                    initial_sidebar_state="collapsed")
 
 # =====================================================================
@@ -304,6 +304,15 @@ a{text-decoration:none;}
 .masonry img{width:100%;border-radius:14px;display:block;}
 .masonry .ph{min-height:200px;}
 
+/* gallery page - separate cards, 2 per row (2 left + 2 right) */
+.gallery-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:28px;}
+.gcard{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 16px rgba(46,91,52,.15);
+  border-bottom:5px solid var(--grain);transition:transform .25s,box-shadow .25s;}
+.gcard:hover{transform:translateY(-5px);box-shadow:0 10px 26px rgba(46,91,52,.25);}
+.gcard .gimg{aspect-ratio:4/3;overflow:hidden;background:#e8eedc;}
+.gcard .gimg img,.gcard .gimg .ph{width:100%;height:100%;object-fit:cover;display:block;border-radius:0;min-height:0;}
+.gcard .gcap{padding:14px 18px;font-family:'Bitter',serif;font-weight:700;color:var(--field);text-align:center;}
+
 /* about */
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;}
 .stat{background:#fff;border-radius:16px;padding:24px;text-align:center;border-top:5px solid var(--grain);}
@@ -350,6 +359,7 @@ div[data-testid="stForm"]{background:#fff;border:none;border-radius:16px;padding
 @media (max-width:560px){
   .grid4,.stats{grid-template-columns:1fr;}
   .masonry{column-count:1;}
+  .gallery-grid{grid-template-columns:1fr;}
 }
 </style>
 """
@@ -359,7 +369,7 @@ div[data-testid="stForm"]{background:#fff;border:none;border-radius:16px;padding
 # SHARED PIECES
 # =====================================================================
 def header(active: str):
-    logo_uri = data_uri(str(IMG / "D:\Dashboard\images\mitraya_logo.jpeg"))
+    logo_uri = data_uri(str(IMG / "D:/Dashboard/images/mitraya_logo.jpeg"))
     logo = (f'<img src="{logo_uri}" alt="{SHORT_NAME} logo">' if logo_uri
             else '<div class="logo-ph">🌾</div>')
     items = ""
@@ -499,12 +509,16 @@ def page_gallery():
     page_banner("Gallery", "Moments from the fields, the training sessions and our farming community.")
     files = gallery_files()
     if files:
-        tiles = "".join(
-            f'<div class="item"><img src="{data_uri(str(f))}" alt="{f.stem}"></div>' for f in files)
+        cards = "".join(
+            f'<div class="gcard"><div class="gimg"><img loading="lazy" src="{data_uri(str(f))}" alt="{f.stem}"></div>'
+            f'<div class="gcap">{f.stem.replace("_", " ").replace("-", " ").title()}</div></div>'
+            for f in files)
     else:
-        tiles = "".join(f'<div class="item">{img("", f"Photo {i}")}</div>' for i in range(1, 10))
-        tiles += ""
-    show(f'<div class="section"><div class="wrap"><div class="gallery_files">{tiles}</div></div></div>')
+        cards = "".join(
+            f'<div class="gcard"><div class="gimg">{img("gallery/x", f"Photo {i}")}</div>'
+            f'<div class="gcap">Photo {i}</div></div>'
+            for i in range(1, 5))
+    show(f'<div class="section"><div class="wrap"><div class="gallery-grid">{cards}</div></div></div>')
     if not files:
         st.info("Add pictures to the images/gallery folder and they will appear here automatically.")
 
